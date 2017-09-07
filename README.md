@@ -23,12 +23,12 @@ $ time bin/hadoop jar wc.jar WordCount /path-to-input-file /path-to-output-file
 We will conduct experiments using different MapReduce benchmarks to stress Hadoop clusters over distinct situations on the container-based virtualization systems. The Distribution of Hadoop provides number of Benchmarks, which are bundled in `hadoop-*test*.jar` and `hadoop-*examples*.jar`. The approach we took to do this is by conducting experiments on two well known evaluation perspectives `Micro Benchmark` and `Macro Benchmark`.
 #### Micro Benchmark
 Micro-benchmark is used to test the basic components of the Hadoop system. By micro-benchmarks it is possible to measure the performance of basic components before evaluating the system as a whole. Various Micro-benchmarks are `TestDFSIO`, `NameNode` and `MapReduce` benchmarks.
-	##### TestDFSIO Benchmark
-		The TestDFSIO is a read and write test for HDFS. It uses one map task per file. It gives an idea of how fast the cluster is terms of I/O. Helpful in stress testing HDFS. It discovers network performance bottleneck. Default output directory is `/benchmarks/TestDFSIO`.
-		Note: Run write test before read test as the TestDFSIO read benchmark doesn't generate its own input files.
-	##### NameNode Benchmark
+##### TestDFSIO Benchmark
+The TestDFSIO is a read and write test for HDFS. It uses one map task per file. It gives an idea of how fast the cluster is terms of I/O. Helpful in stress testing HDFS. It discovers network performance bottleneck. Default output directory is `/benchmarks/TestDFSIO`.
+Note: Run write test before read test as the TestDFSIO read benchmark doesn't generate its own input files.
+##### NameNode Benchmark
 
-	##### MapReduce Benchmark
+##### MapReduce Benchmark
 
 #### Macro Benchmark
 Macro-benchmarks stress out numerous segments of a framework and can typically give more critical outcomes, as it certainly incorporates the segments before assessed by small scale benchmarks.

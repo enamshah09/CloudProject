@@ -22,13 +22,36 @@ $ time bin/hadoop jar wc.jar WordCount /path-to-input-file /path-to-output-file
 ### 2. Running Hadoop Benchmarks
 We will conduct experiments using different MapReduce benchmarks to stress Hadoop clusters over distinct situations on the container-based virtualization systems. The Distribution of Hadoop provides number of Benchmarks, which are bundled in `hadoop-*test*.jar` and `hadoop-*examples*.jar`. The approach we took to do this is by conducting experiments on two well known evaluation perspectives `Micro Benchmark` and `Macro Benchmark`.
 #### Micro Benchmark
-Micro-benchmark is used to test the basic components of the Hadoop system. By micro-benchmarks it is possible to measure the performance of basic components before evaluating the system as a whole. Various Micro-benchmarks are `TestDFSIO`, `NameNode` and `MapReduce` benchmarks.
+Micro-benchmark is used to test the basic components of the Hadoop system. By micro-benchmarks it is possible to measure the performance of basic components before evaluating the system as a whole. Various Micro-benchmarks are `TestDFSIO`, `NameNode` and `MapReduce`
 ##### TestDFSIO Benchmark
 The TestDFSIO is a read and write test for HDFS. It uses one map task per file. It gives an idea of how fast the cluster is terms of I/O. Helpful in stress testing HDFS. It discovers network performance bottleneck. Default output directory is `/benchmarks/TestDFSIO`.
 Note: Run write test before read test as the TestDFSIO read benchmark doesn't generate its own input files.
-##### NameNode Benchmark
-
-##### MapReduce Benchmark
-
+###### TestDFSIO write test
+```
+$ time bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.jar TestDFSIO -write -nrFiles N -fileSize MB
+```
+###### TestDFSIO read test
+```
+$ time bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.jar TestDFSIO -read -nrFiles N -fileSize MB
+```
+###### Remove and clean the test data
+```
+$ bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.jar TestDFSIO -clean
+```
+##### NameNode(NN) Benchmark
+In order to analyse the behaviour of NameNode component while dealing with huge amount of HDFS – related requests we choose NN Benchmark. NN Benchmark generates a lot of HDFS-related requests with normally very small “payloads” for the sole purpose of putting a high HDFS management stress on the NameNode. This benchmark is considered to be the load test for HDFS files where we create, write, open, read and delete files.
+Note: Run create_write test before open_read, rename, delete test as the NN benchmark doesn't generate its own input files.
+```
+$ bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.jar nnbench -operation <create_write | open_read | rename | delete> -maps <No. of maps. Default=1. Not mandatory> -reduces <No. of reduces. Default=1. Not mandatory> -blockSize <Block size in bytes. Default=1. Not mandatory> -bytesToWrite <Default=0. Not mandatory> -numberOfFiles <No. of files to create. Default=1. Not mandatory> -replicationFactorPerFile <Default=1. Not mandatory> -baseDir <Base DFS path. Default=/becnhmarks/NNBench> -readFileAfterOpen<Boolean (true of false)>
+```
+Eg. 
+```
+bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.jar nnbench -operation create_write -maps 12 -reduces 6 -blockSize 1 -bytesToWrite 0 -numberOfFiles 1000 -replicationFactorPerFile 3 -readFileAfterOpen true -baseDir /benchmarks/NNBench-`hostname -s`
+```
+##### MapReduce(MR) Benchmark
+MapReduce Benchmark loops a small job a number of times. This benchmark stresses the MR layer to identify how efficiently it works while dealing with enormous job requests. MRBench checks whether small job runs are responsive and running efficiently on your cluster. It puts its focus on the MapReduce layer as its impact on the HDFS layer is very limited.
+```
+$ time bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.jar mrbench -numRuns N
+```
 #### Macro Benchmark
 Macro-benchmarks stress out numerous segments of a framework and can typically give more critical outcomes, as it certainly incorporates the segments before assessed by small scale benchmarks.

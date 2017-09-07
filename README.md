@@ -72,7 +72,7 @@ $ export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
 $ bin/hadoop com.sun.tools.javac.Main WordCount.java
 $ jar cf wc.jar WordCount*.class
 ```
-* Take the input files using wget command and move them to a directory where you have all the input files
+* Take the input files using wget command and move them to a directory where you have all the input files. [Sample Input Files](http://mattmahoney.net/dc/textdata.html)
 * Run WordCount.java and also specify the path for input files and output files
 ```
 $ time bin/hadoop jar wc.jar WordCount /path-to-input-file /path-to-output-file

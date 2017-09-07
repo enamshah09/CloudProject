@@ -42,11 +42,18 @@ $ bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.
 In order to analyse the behaviour of NameNode component while dealing with huge amount of HDFS – related requests we choose NN Benchmark. NN Benchmark generates a lot of HDFS-related requests with normally very small “payloads” for the sole purpose of putting a high HDFS management stress on the NameNode. This benchmark is considered to be the load test for HDFS files where we create, write, open, read and delete files.
 Note: Run create_write test before open_read, rename, delete test as the NN benchmark doesn't generate its own input files.
 ```
-$ bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.jar nnbench -operation <create_write | open_read | rename | delete> -maps <No. of maps. Default=1. Not mandatory> -reduces <No. of reduces. Default=1. Not mandatory> -blockSize <Block size in bytes. Default=1. Not mandatory> -bytesToWrite <Default=0. Not mandatory> -numberOfFiles <No. of files to create. Default=1. Not mandatory> -replicationFactorPerFile <Default=1. Not mandatory> -baseDir <Base DFS path. Default=/becnhmarks/NNBench> -readFileAfterOpen<Boolean (true of false)>
+$ bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.jar nnbench \ 
+-operation <create_write | open_read | rename | delete> -maps <No. of maps. Default=1. Not mandatory> \ 
+-reduces <No. of reduces. Default=1. Not mandatory> -blockSize <Block size in bytes. Default=1. Not mandatory> \ 
+-bytesToWrite <Default=0. Not mandatory> -numberOfFiles <No. of files to create. Default=1. Not mandatory> \ 
+-replicationFactorPerFile <Default=1. Not mandatory> -baseDir <Base DFS path. Default=/becnhmarks/NNBench> \ 
+-readFileAfterOpen<Boolean (true of false)>
 ```
 Eg. 
 ```
-bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.jar nnbench -operation create_write -maps 12 -reduces 6 -blockSize 1 -bytesToWrite 0 -numberOfFiles 1000 -replicationFactorPerFile 3 -readFileAfterOpen true -baseDir /benchmarks/NNBench-`hostname -s`
+bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.jar nnbench \ 
+-operation create_write -maps 12 -reduces 6 -blockSize 1 -bytesToWrite 0 -numberOfFiles 1000 \ 
+-replicationFactorPerFile 3 -readFileAfterOpen true -baseDir /benchmarks/NNBench-`hostname -s`
 ```
 ##### MapReduce(MR) Benchmark
 MapReduce Benchmark loops a small job a number of times. This benchmark stresses the MR layer to identify how efficiently it works while dealing with enormous job requests. MRBench checks whether small job runs are responsive and running efficiently on your cluster. It puts its focus on the MapReduce layer as its impact on the HDFS layer is very limited.

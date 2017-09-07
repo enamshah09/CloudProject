@@ -1,28 +1,10 @@
 # Comparison of Containers - Google Cloud and Amazon EC2
 The purpose of this repo is to compare and analyze containers of different cloud providers by using different MapReduce Benchmarks in Hadoop.
 ## Steps
-### 1. Setup WordCount
-* Create java file for WordCount program [WordCount.java](https://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Source_Code)
-* Setup Environment variables and export path
-```
-$ export JAVA_HOME=/usr/java/default
-$ export PATH=${JAVA_HOME}/bin:${PATH}
-$ export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
-```
-* Compile `Word count` java file and create a jar file
-```
-$ bin/hadoop com.sun.tools.javac.Main WordCount.java
-$ jar cf wc.jar WordCount*.class
-```
-* Take the input files using wget command and move them to a directory where you have all the input files
-* Run WordCount.java and also specify the path for input files and output files
-```
-$ time bin/hadoop jar wc.jar WordCount /path-to-input-file /path-to-output-file
-```
-### 2. Running Hadoop Benchmarks
+### 1. Running Hadoop Benchmarks
 We will conduct experiments using different MapReduce benchmarks to stress Hadoop clusters over distinct situations on the container-based virtualization systems. The Distribution of Hadoop provides number of Benchmarks, which are bundled in `hadoop-*test*.jar` and `hadoop-*examples*.jar`. The approach we took to do this is by conducting experiments on two well known evaluation perspectives `Micro Benchmark` and `Macro Benchmark`.
 #### Micro Benchmark
-Micro-benchmark is used to test the basic components of the Hadoop system. By micro-benchmarks it is possible to measure the performance of basic components before evaluating the system as a whole. Various Micro-benchmarks are `TestDFSIO`, `NameNode` and `MapReduce`
+Micro-benchmark is used to test the basic components of the Hadoop system. By micro-benchmarks it is possible to measure the performance of basic components before evaluating the system as a whole. Various Micro-benchmarks that we implemented are `TestDFSIO`, `NameNode` and `MapReduce`
 ##### TestDFSIO Benchmark
 The TestDFSIO is a read and write test for HDFS. It uses one map task per file. It gives an idea of how fast the cluster is terms of I/O. Helpful in stress testing HDFS. It discovers network performance bottleneck. Default output directory is `/benchmarks/TestDFSIO`.
 Note: Run write test before read test as the TestDFSIO read benchmark doesn't generate its own input files.
@@ -61,4 +43,40 @@ MapReduce Benchmark loops a small job a number of times. This benchmark stresses
 $ time bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.1.jar mrbench -numRuns N
 ```
 #### Macro Benchmark
-Macro-benchmarks stress out numerous segments of a framework and can typically give more critical outcomes, as it certainly incorporates the segments before assessed by small scale benchmarks.
+Macro-benchmarks stress out numerous segments of a framework and can typically give more critical outcomes, as it certainly incorporates the segments before assessed by small scale benchmarks. Various Macro-benchmarks that we implemented are `TeraSort` and `WordCount`
+##### TeraSort Benchmark
+The goal of this benchmark is to sort any amount of data as fast as possible. It is a benchmark that combines testing the HDFS and MapReduce layers of an Hadoop cluster. Terasort is the well-known benchmark to identify how fast a Hadoop cluster is.
+A full TeraSort benchmark run consists of the following three steps:
+- Generate I/p via `TeraGen`
+```
+$ time bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.jar teragen <number of 100-byte rows> <output dir>
+```
+- Running TeraSort in I/p generated
+```
+$ time bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.jar terasort <input dir> <output dir>
+```
+- Validate the sorted data obtained from the above step
+```
+time bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.jar teravalidate <terasort output dir (= input data)> <teravalidate output dir>
+```
+### 2. Setup WordCount
+* Create java file for WordCount program [WordCount.java](https://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Source_Code)
+* Setup Environment variables and export path
+```
+$ export JAVA_HOME=/usr/java/default
+$ export PATH=${JAVA_HOME}/bin:${PATH}
+$ export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
+```
+* Compile `Word count` java file and create a jar file
+```
+$ bin/hadoop com.sun.tools.javac.Main WordCount.java
+$ jar cf wc.jar WordCount*.class
+```
+* Take the input files using wget command and move them to a directory where you have all the input files
+* Run WordCount.java and also specify the path for input files and output files
+```
+$ time bin/hadoop jar wc.jar WordCount /path-to-input-file /path-to-output-file
+```
+
+
+
